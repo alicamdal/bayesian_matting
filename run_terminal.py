@@ -77,8 +77,8 @@ def createComposite(bg_inp, fg_inp, alpha):
     result = np.hstack((alpha_cp, bg + fg))
     cv2.imshow("results", result)
     cv2.imwrite("outputs/output_alpha.png", alpha_cp * 255)
-    cv2.imwrite("outputs/output_foreground", fg * 255)
-    cv2.imwrite("outputs/output_background", bg * 255)
+    cv2.imwrite("outputs/output_foreground.png", fg * 255)
+    cv2.imwrite("outputs/output_background.png", bg * 255)
     cv2.imwrite("outputs/output_composited.png", (bg + fg) * 255)
     if cv2.waitKey(0) & 0xFF == ord("q"):
         cv2.destroyAllWindows()
