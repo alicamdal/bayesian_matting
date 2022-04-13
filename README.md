@@ -7,6 +7,7 @@ All required libraries can be found in requirements.txt
 pip install -r requirements.txt
 ```
 ## Using Conda
+Multiprocessing has some bugs in Conda Environment. Therefore, if you have any errors on Conda, you can run the application without using multiprocessing.
 ```
 conda install --file requirements.txt
 ```
