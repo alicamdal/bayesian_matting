@@ -18,6 +18,7 @@ There are two options for running application.
 ```
 pyhton run_gui.py
 ```
+![alt text](https://github.com/alicamdal/bayesian_matting/scripts/Samples/gui.png "GUI")
 ## Running Terminal
 ```
 python run_terminal --input <INPUT_IMG_DIR> --trimap <TRIMAP_IMG_DIR> --gt <GT_IMG_DIR> 
