@@ -13,7 +13,7 @@ conda install --file requirements.txt
 There are two options for running application. 
 ## Running GUI
 ```
-pyhton run_gui.py
+python run_gui.py
 ```
 ![alt text](scripts/Samples/gui.png "GUI")
 
