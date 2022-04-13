@@ -15,7 +15,8 @@ There are two options for running application.
 ```
 python run_gui.py
 ```
-![alt text](scripts/Samples/gui.png =250x250 "GUI")
+<img src="scripts/Samples/gui.png" width="200" height="200"/>
+
 
 As can be seen above, GUI has textboxes for Bayesian parameters. These parameters can be changed by them. If application is desired to run without multiprocessing, cpu count should be set as 1.
 ## Running Terminal
