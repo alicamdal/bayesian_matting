@@ -15,6 +15,7 @@ There are two options for running application.
 ```
 python run_gui.py
 ```
+<br/>
 <img src="scripts/Samples/gui.png" width="480" height="300"/>
 
 
@@ -28,4 +29,4 @@ python run_terminal --input <INPUT_IMG_DIR> --trimap <TRIMAP_IMG_DIR> --gt <GT_I
 Terminal application can be run as above. Reqired arguments are input, trimap and groundtruth images. Other arguments have their own default value.
 If application is desired to run without multiprocessing, cpu count argument should be set as 1. Parser method can be seen below for default parameters.
 <br/>
-![alt text](scripts/Samples/parser.png "Parser")
+<img src="scripts/Samples/parser.png" width="480" height="300"/>
