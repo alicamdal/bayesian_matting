@@ -2,6 +2,7 @@
 Bayesian Matting Python implementation for Computational Methods
 
 # Installing Libararies
+All required libraries can be found in requirements.txt
 ## Using Pip
 ```
 pip install -r requirements.txt
@@ -12,6 +13,7 @@ conda install --file requirements.txt
 ```
 
 # Running
+There are two options for running application. 
 ## Running GUI
 ```
 pyhton run_gui.py
