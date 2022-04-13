@@ -13,7 +13,7 @@ import multiprocessing
 import numpy as np
 import cv2
 import math
-
+from PIL import Image
 
 class progressBar(QMainWindow):
     def __init__(self):
@@ -76,6 +76,10 @@ class Window(QMainWindow):
         self.triButton.setText("Select GT")
         self.triButton.clicked.connect(self.gtDialog)
         self.triButton.move(250, 150)
+        self.bgButton = QPushButton(self)
+        self.bgButton.setText("Select BG")
+        self.bgButton.clicked.connect(self.bgDialog)
+        self.bgButton.move(250, 200)
 
         self.inplbl = QLabel("Input Image : ", self)
         self.inplbl.move(0, 50)
@@ -89,19 +93,24 @@ class Window(QMainWindow):
         self.gtLbl.move(0, 150)
         self.gt_name = QLabel("None", self)
         self.gt_name.move(120, 150)
+        self.bgLbl = QLabel("BG Image : ", self)
+        self.bgLbl.move(0, 200)
+        self.bg_name = QLabel("None", self)
+        self.bg_name.move(120, 200)
+        
         self.mseLbl = QLabel("MSE : ", self)
-        self.mseLbl.move(0, 200)
+        self.mseLbl.move(0, 250)
         self.psnrLbl = QLabel("PSNR : ", self)
-        self.psnrLbl.move(120, 200)
+        self.psnrLbl.move(120, 250)
         self.timeLbl = QLabel("Time : ", self)
-        self.timeLbl.move(240, 200)
+        self.timeLbl.move(240, 250)
 
         self.time_value = QLabel("None", self)
-        self.time_value.move(290, 200)
+        self.time_value.move(290, 250)
         self.mse_value = QLabel("None", self)
-        self.mse_value.move(50, 200)
+        self.mse_value.move(50, 250)
         self.psnr_value = QLabel("None", self)
-        self.psnr_value.move(170, 200)
+        self.psnr_value.move(170, 250)
 
         self.windowsizelbl = QLabel("Window Size : ", self)
         self.windowsizelbl.move(450, 50)
@@ -178,6 +187,18 @@ class Window(QMainWindow):
             name = self.gt_file.split("/")
             self.gt_name.setText(name[-1])
 
+    @pyqtSlot()
+    def bgDialog(self):
+        self.bg_file, check = QFileDialog.getOpenFileName(
+                                                            None,
+                                                            "Select Image",
+                                                            "",
+                                                            "All Files (*);;"
+                                                            )
+        if check:
+            name = self.bg_file.split("/")
+            self.bg_name.setText(name[-1])
+
     def calculateMetrics(self, alpha, calc_time, selector):
         if selector == 0:
             gt_img = cv2.imread(self.gt_file) / 255
@@ -203,6 +224,43 @@ class Window(QMainWindow):
             self.psnr_value.setText(psnr)
             self.mse_value.setText(mse)
             self.time_value.setText(time)
+
+    def createComposite(self, bg_inp, fg_inp, alpha):
+        new_bg = cv2.imread(bg_inp) / 255
+        fg_inp = cv2.imread(fg_inp) / 255
+        alpha_cp = alpha
+        if new_bg.shape[0] != fg_inp.shape[0] or new_bg.shape[1] != fg_inp.shape[1]:
+            new_shp_bg = Image.new("RGB", (fg_inp.shape[1], fg_inp.shape[0]))
+            new_shp_bg.paste(Image.open(bg_inp), (0, 0))
+            new_bg = np.array(new_shp_bg)
+            new_bg = cv2.cvtColor(new_bg, cv2.COLOR_RGB2BGR)
+            new_bg = new_bg / 255
+            print("""
+                ERROR
+                New Background width or height is different than input's.
+                """)
+
+        if alpha_cp.shape[-1] != 3:
+            new_alpha = Image.new("RGB", (alpha_cp.shape[1], alpha_cp.shape[0]))
+            new_alpha.paste(Image.fromarray(alpha_cp * 255), (0,0))
+            alpha_cp = np.array(new_alpha)
+            alpha_cp[alpha_cp > 155] = 255
+            alpha_cp[alpha_cp != 255] = 0
+            alpha_cp = cv2.cvtColor(alpha_cp, cv2.COLOR_RGB2BGR) / 255
+
+        alpha_mask = alpha_cp.copy()
+        alpha_mask[alpha_cp != 0] = 0
+        alpha_mask[alpha_cp == 0] = 1
+        bg = alpha_mask * new_bg
+        fg = alpha_cp * fg_inp
+        result = np.hstack((alpha_cp, bg + fg))
+        cv2.imshow("results", result)
+        cv2.imwrite("outputs/output_alpha.png", alpha_cp * 255)
+        cv2.imwrite("outputs/output_foreground.png", fg * 255)
+        cv2.imwrite("outputs/output_background.png", bg * 255)
+        cv2.imwrite("outputs/output_composited.png", (bg + fg) * 255)
+        if cv2.waitKey(0) & 0xFF == ord("q"):
+            cv2.destroyAllWindows()
 
     @pyqtSlot()
     def start(self):
@@ -257,5 +315,6 @@ class Window(QMainWindow):
                         True
                         )
             calc_time = time.time() - start
-            cv2.imwrite("output.png", alpha * 255)
             self.calculateMetrics(alpha, calc_time=calc_time, selector=1)
+
+        self.createComposite(self.bg_file, self.inp_file, alpha)

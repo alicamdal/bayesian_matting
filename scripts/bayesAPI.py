@@ -84,7 +84,6 @@ class bayesMat:
             h += im.size[1]
             output.append(file_name.format(i))
 
-        new_im.save(self.output_name)
         new_im = np.array(new_im)
         new_im[new_im > 155] = 255
         new_im[new_im != 255] = 0
@@ -189,6 +188,4 @@ class bayesMat:
         self.clearImgs(inputs)
         self.clearImgs(trimaps)
         alpha = self.combineImg()
-        img = cv2.imread(self.input)
-        cv2.imwrite("composited_" + self.output_name, np.multiply(img, alpha)) 
         return alpha, calc_time

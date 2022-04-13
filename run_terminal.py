@@ -5,13 +5,14 @@ import cv2
 import time
 import numpy as np
 import math
-
+from PIL import Image
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=str, default="")
     parser.add_argument("--trimap", type=str, default="")
     parser.add_argument("--gt", type=str, default="")
+    parser.add_argument("--new-bg", type=str, default="")
     parser.add_argument("--window-size", type=int, default=25)
     parser.add_argument("--sigmac", type=float, default=0.01)
     parser.add_argument("--sigmag", type=int, default=10)
@@ -44,6 +45,43 @@ def calculateMetrics(gt_img, alpha, selector):
             mse = "%.5f" % mse
             return psnr, mse
 
+
+def createComposite(bg_inp, fg_inp, alpha):
+    new_bg = cv2.imread(bg_inp) / 255
+    fg_inp = cv2.imread(fg_inp) / 255
+    alpha_cp = alpha
+    if new_bg.shape[0] != fg_inp.shape[0] or new_bg.shape[1] != fg_inp.shape[1]:
+        new_shp_bg = Image.new("RGB", (fg_inp.shape[1], fg_inp.shape[0]))
+        new_shp_bg.paste(Image.open(bg_inp), (0, 0))
+        new_bg = np.array(new_shp_bg)
+        new_bg = cv2.cvtColor(new_bg, cv2.COLOR_RGB2BGR)
+        new_bg = new_bg / 255
+        print("""
+            ERROR
+            New Background width or height is different than input's.
+            """)
+
+    if alpha_cp.shape[-1] != 3:
+        new_alpha = Image.new("RGB", (alpha_cp.shape[1], alpha_cp.shape[0]))
+        new_alpha.paste(Image.fromarray(alpha_cp * 255), (0,0))
+        alpha_cp = np.array(new_alpha)
+        alpha_cp[alpha_cp > 155] = 255
+        alpha_cp[alpha_cp != 255] = 0
+        alpha_cp = cv2.cvtColor(alpha_cp, cv2.COLOR_RGB2BGR) / 255
+
+    alpha_mask = alpha_cp.copy()
+    alpha_mask[alpha_cp != 0] = 0
+    alpha_mask[alpha_cp == 0] = 1
+    bg = alpha_mask * new_bg
+    fg = alpha_cp * fg_inp
+    result = np.hstack((alpha_cp, bg + fg))
+    cv2.imshow("results", result)
+    cv2.imwrite("outputs/output_alpha.png", alpha_cp * 255)
+    cv2.imwrite("outputs/output_foreground", fg * 255)
+    cv2.imwrite("outputs/output_background", bg * 255)
+    cv2.imwrite("outputs/output_composited.png", (bg + fg) * 255)
+    if cv2.waitKey(0) & 0xFF == ord("q"):
+        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     args = parse_args()
@@ -85,3 +123,5 @@ if __name__ == "__main__":
         print(f"Process took : {int(calc_time)} seconds")
         print(f"PSNR : {psnr} dB")
         print(f"MSE : {mse}")
+    
+    createComposite(args.new_bg, args.input, alpha)
