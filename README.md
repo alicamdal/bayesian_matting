@@ -25,9 +25,7 @@ python run_gui.py
 As can be seen above, GUI has textboxes for Bayesian parameters. These parameters can be changed by them. If application is desired to run without multiprocessing, cpu count should be set as 1.
 ## Running Terminal
 ```
-python run_terminal --input <INPUT_IMG_DIR> --trimap <TRIMAP_IMG_DIR> --gt <GT_IMG_DIR> --new_bg <BG_IMG_DIR> 
-                    --window-size 40 --sigmac 0.01 --sigmag 10 --minN 40 --max-iter 200 --min-like 1e-6 
-                    --cpu-count 8 --output-name OUTPUT_FILE.PNG
+python run_terminal.py --input <INPUT_IMG_DIR> --trimap <TRIMAP_IMG_DIR> --gt <GT_IMG_DIR> --new_bg <BG_IMG_DIR>  --window-size 40 --sigmac 0.01 --sigmag 10 --minN 40 --max-iter 200 --min-like 1e-6 --cpu-count 8 --output-name OUTPUT_FILE.PNG
 ```
 Terminal application can be run as above. Reqired arguments are input, trimap, groundtruth and new background images. Other arguments have their own default value.
 If application is desired to run without multiprocessing, cpu count argument should be set as 1. Parser method can be seen below for default parameters.
@@ -37,6 +35,5 @@ If application is desired to run without multiprocessing, cpu count argument sho
 
 ### Example Running for Terminal
 ```
-python run_terminal.py --input scripts/Samples/input1.png --trimap scripts/Samples/trimap1.png 
-                       --gt scripts/Samples/gt1.png --new_bg scripts/Samples/input2.png
+python run_terminal.py --input scripts/Samples/input1.png --trimap scripts/Samples/trimap1.png  --gt scripts/Samples/gt1.png --new_bg scripts/Samples/input2.png
 ```
