@@ -1,7 +1,4 @@
-# bayesian_matting
-Bayesian Matting Python implementation for Computational Methods
-
-# Installing Libararies
+# Installing Libraries
 All required libraries can be found in requirements.txt
 ## Using Pip
 ```
