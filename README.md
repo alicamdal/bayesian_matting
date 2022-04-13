@@ -2,7 +2,7 @@
 Bayesian matting proposes a method for solving matting problem such as extracting background and foreground with individual pixel values. In this project Bayesian Framework is implemented in Python environment.
 # Installing Libraries
 All required libraries can be found in requirements.txt
-## Using Pip
+## Using Pip(Recommended)
 ```
 pip install -r requirements.txt
 ```
