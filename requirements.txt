@@ -6,3 +6,4 @@ numpy
 matplotlib
 scipy
 guppy3
+scikit-image
