@@ -33,7 +33,7 @@ If application is desired to run without multiprocessing, cpu count argument sho
 <br/>
 <img src="scripts/Samples/parser.png" width="480" height="300"/>
 
-### Example Running for Terminal
+### Example for Running Terminal
 ```
 python run_terminal.py --input scripts/Samples/input1.png --trimap scripts/Samples/trimap1.png  --gt scripts/Samples/gt1.png --new_bg scripts/Samples/input2.png
 ```
