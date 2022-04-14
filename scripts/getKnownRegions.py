@@ -16,7 +16,7 @@ def getKnownRegions(img, trimap):
         alpha   => initial alpha matte  
     """
     # value of 0.5 for unknown pixels
-    mid = 128 / 255
+    #mid = 0.4
     # finding known foreground
     fgMask1 = trimap == 1
     f_known = img.copy()
@@ -29,8 +29,8 @@ def getKnownRegions(img, trimap):
     b_known[bgMask] = 0
     # finding unknown pixels and converting 0.5 values to 1
     unMask = trimap.copy()
-    unMask[trimap != mid] = 0
-    unMask[unMask == mid] = 1
+    unMask[trimap == 1] = 0
+    unMask[unMask != 0] = 1
     # finding initial alpha with NaN values
     alpha = np.zeros(trimap.shape)
     alpha[fgMask1] = 1

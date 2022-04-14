@@ -65,8 +65,8 @@ def createComposite(bg_inp, fg_inp, alpha):
         new_alpha = Image.new("RGB", (alpha_cp.shape[1], alpha_cp.shape[0]))
         new_alpha.paste(Image.fromarray(alpha_cp * 255), (0,0))
         alpha_cp = np.array(new_alpha)
-        alpha_cp[alpha_cp > 155] = 255
-        alpha_cp[alpha_cp != 255] = 0
+        #alpha_cp[alpha_cp > 155] = 255
+        #alpha_cp[alpha_cp != 255] = 0
         alpha_cp = cv2.cvtColor(alpha_cp, cv2.COLOR_RGB2BGR) / 255
 
     alpha_mask = alpha_cp.copy()
@@ -76,7 +76,7 @@ def createComposite(bg_inp, fg_inp, alpha):
     fg = alpha_cp * fg_inp
     result = np.hstack((alpha_cp, bg + fg))
     cv2.imshow("results", result)
-    cv2.imwrite("outputs/output_alpha.png", alpha_cp * 255)
+    cv2.imwrite("outputs/output_alpha.png", alpha * 255)
     cv2.imwrite("outputs/output_foreground.png", fg * 255)
     cv2.imwrite("outputs/output_background.png", bg * 255)
     cv2.imwrite("outputs/output_composited.png", (bg + fg) * 255)
